@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useState, useEffect } from 'react';
+import React, { createContext, useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 
 interface AuthContextProps {
@@ -22,23 +22,33 @@ interface AuthProviderProps {
 }
 
 export function AuthProvider({ children } : AuthProviderProps) {
-    console.log('AuthProvider mounted');
-
+    console.log('AuthProvider render');
+    let i = 0; 
     const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
     const router = useRouter();
 
     useEffect(() => {
-        if (isAuthenticated === null) {
+        console.log("AuthProvider isAuthenticated");
+
+        // if (isAuthenticated === null) {
             const token = localStorage.getItem('token');
-            console.log('useEffect in AuthProvider', token);
+            // console.log('useEffect in AuthProvider', token);
             if (token) {
-                console.log('isAuthenticated');
+                // console.log('isAuthenticated');
                 setIsAuthenticated(true);
             }
-        }
+        // }
     }, [isAuthenticated]);
 
-    const signIn = async (username: string, password: string) => {
+    useEffect(() => {
+        console.log("AuthProvider mounted");
+    }, []);
+
+    const signIn = useCallback(async (username: string, password: string) => {
+        console.log(i);
+        i++;
+        router.push('/');
+
         const response = await fetch('http://localhost:3000/login', {
             method: 'POST',
             headers: {
@@ -52,8 +62,7 @@ export function AuthProvider({ children } : AuthProviderProps) {
 
         localStorage.setItem('token', token);
         setIsAuthenticated(true);
-        router.push('/');
-    }
+    }, [router, i]);
 
     const signOut = () => {
         localStorage.removeItem('token');

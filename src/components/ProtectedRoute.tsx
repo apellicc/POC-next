@@ -9,7 +9,7 @@ interface ProtectedRouteProps {
 }
 
 export default function ProtectedRoute({ children }: ProtectedRouteProps) {
-    console.log('ProtectedRoute');
+    console.log(`ProtectedRoute ${new Date().toString()}`);
     const { isAuthenticated } = useContext(AuthContext);
     const router = useRouter();
 
